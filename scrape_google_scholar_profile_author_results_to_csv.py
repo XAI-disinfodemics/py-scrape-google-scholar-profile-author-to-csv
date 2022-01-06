@@ -30,14 +30,9 @@ def profile_results():
             link = profile["link"]
             author_id = profile["author_id"]
             affiliations = profile["affiliations"]
-
-            try:
-                email = profile["email"]
-            except: email = None
-
-            try:
-                interests = profile["interests"]
-            except: interests = None
+            email = profile.get("email")
+            cited_by = profile.get("cited_by")
+            interests = profile.get("interests")
 
             profile_results_data.append({
                 "thumbnail": thumbnail,
@@ -79,42 +74,22 @@ def author_results():
         thumbnail = results["author"]["thumbnail"]
         name = results["author"]["name"]
         affiliations = results["author"]["affiliations"]
+        email = results.get("author").get("email")
+        website = results.get("author").get("website")
+        interests = results.get("author").get("interests")
 
         try:
-            email = results["author"]["email"]
-        except: email = None
+            cited_by_table = results["cited_by"]["table"]
+        except: cited_by_table = None
 
         try:
-            website = results["author"]["website"]
-        except: website = None
-
-        try:
-            interests = results["author"]["interests"]
-        except: interests = None
-
-        try:
-            cited_by = results["author"]["cited_by"]["table"]
-        except: cited_by = None
-
-        try:
-            cited_by_graph = results["author"]["graph"]
+            cited_by_graph = results["cited_by"]["graph"]
         except: cited_by_graph = None
 
-        try:
-            public_access_link = results["author"]["public_access"]["link"]
-        except: public_access_link = None
-
-        try:
-            available_public_access = results["author"]["public_access"]["available"]
-        except: available_public_access = None
-
-        try:
-            not_available_public_access = results["author"]["public_access"]["not_available"]
-        except: not_available_public_access = None
-
-        try:
-            co_authors = results["author"]["co_authors"]
-        except: co_authors = None
+        public_access_link = results.get("public_access", {}).get("link")
+        available_public_access = results.get("public_access", {}).get("available")
+        not_available_public_access = results.get("public_access", {}).get("not_available")
+        co_authors = results.get("co_authors")
 
         author_results_data.append({
             "thumbnail": thumbnail,
@@ -123,7 +98,7 @@ def author_results():
             "email": email,
             "website": website,
             "interests": interests,
-            "cited_by": cited_by,
+            "cited_by_table": cited_by_table,
             "cited_by_graph": cited_by_graph,
             "public_access_link": public_access_link,
             "available_public_access": available_public_access,
@@ -162,18 +137,10 @@ def all_author_articles():
                     link = article["link"]
                     citation_id = article["citation_id"]
                     authors = article["authors"]
-
-                    try:
-                        publication = article["publication"]
-                    except: publication = None
-
+                    publication = article.get("publication")
                     cited_by_value = article["cited_by"]["value"]
                     cited_by_link = article["cited_by"]["link"]
-
-                    try:
-                        cited_by_cites_id = article["cited_by"]["cites_id"]
-                    except: cited_by_cites_id = None
-
+                    cited_by_cites_id = article.get("cited_by").get("cites_id")
                     year = article["year"]
 
                     author_article_results_data.append({
