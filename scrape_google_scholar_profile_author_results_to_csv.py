@@ -113,9 +113,9 @@ def all_author_articles():
 
     author_article_results_data = []
 
-    for index, author_id in enumerate(profile_results()):
+    for index, author_id in enumerate(profile_results(), start=1):
 
-        print(f"Parsing {index+1} author with {author_id['author_id']} author ID.")
+        print(f"Parsing {index} author with {author_id['author_id']} author ID.")
 
         params = {
             "api_key": os.getenv("API_KEY"),     # SerpApi API key
