@@ -21,15 +21,15 @@ def profile_results():
 
         profile_results = search.get_dict()
 
-        for profile in profile_results["profiles"]:
+        for profile in profile_results.get("profiles", []):
 
-            print(f'Currently extracting {profile["name"]} with {profile["author_id"]} ID.')
+            print(f'Currently extracting {profile.get("name")} with {profile.get("author_id")} ID.')
 
-            thumbnail = profile["thumbnail"]
-            name = profile["name"]
-            link = profile["link"]
-            author_id = profile["author_id"]
-            affiliations = profile["affiliations"]
+            thumbnail = profile.get("thumbnail")
+            name = profile.get("name")
+            link = profile.get("link")
+            author_id = profile.get("author_id")
+            affiliations = profile.get("affiliations")
             email = profile.get("email")
             cited_by = profile.get("cited_by")
             interests = profile.get("interests")
@@ -44,10 +44,10 @@ def profile_results():
                 "interests": interests
             })
 
-            if "next" in profile_results["pagination"]:
-                search.params_dict.update(dict(parse_qsl(urlsplit(profile_results["pagination"]["next"]).query)))
-            else:
-                profiles_is_present = False
+        if "next" in profile_results.get("pagination", []):
+            search.params_dict.update(dict(parse_qsl(urlsplit(profile_results.get("pagination").get("next")).query)))
+        else:
+            profiles_is_present = False
 
     return profile_results_data
 
@@ -70,9 +70,9 @@ def author_results():
         search = GoogleSearch(params)
         results = search.get_dict()
 
-        thumbnail = results["author"]["thumbnail"]
-        name = results["author"]["name"]
-        affiliations = results["author"]["affiliations"]
+        thumbnail = results.get("author").get("thumbnail")
+        name = results.get("author").get("name")
+        affiliations = results.get("author").get("affiliations")
         email = results.get("author").get("email")
         website = results.get("author").get("website")
         interests = results.get("author").get("interests")
@@ -124,15 +124,15 @@ def all_author_articles():
 
             results = search.get_dict()
             
-            for article in results["articles"]:
-                title = article["title"]
-                link = article["link"]
-                citation_id = article["citation_id"]
-                authors = article["authors"]
+            for article in results.get("articles", []):
+                title = article.get("title")
+                link = article.get("link")
+                citation_id = article.get("citation_id")
+                authors = article.get("authors")
                 publication = article.get("publication")
-                cited_by_value = article["cited_by"]["value"]
-                cited_by_link = article["cited_by"]["link"]
-                cited_by_cites_id = article.get("cited_by").get("cites_id")
+                cited_by_value = article.get("cited_by", {}).get("value")
+                cited_by_link = article.get("cited_by", {}).get("link")
+                cited_by_cites_id = article.get("cited_by", {}).get("cites_id")
                 year = article["year"]
 
                 author_article_results_data.append({
