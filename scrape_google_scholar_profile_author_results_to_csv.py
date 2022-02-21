@@ -133,7 +133,7 @@ def all_author_articles():
                 cited_by_value = article.get("cited_by", {}).get("value")
                 cited_by_link = article.get("cited_by", {}).get("link")
                 cited_by_cites_id = article.get("cited_by", {}).get("cites_id")
-                year = article["year"]
+                year = article.get("year")
 
                 author_article_results_data.append({
                     "article_title": title,
