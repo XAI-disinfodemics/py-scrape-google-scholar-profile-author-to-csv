@@ -53,7 +53,6 @@ def profile_results():
 
 
 def author_results():
-
     print("extracting author results..")
 
     author_results_data = []
@@ -78,13 +77,8 @@ def author_results():
         website = results.get("author").get("website")
         interests = results.get("author").get("interests")
 
-        try:
-            cited_by_table = results["cited_by"]["table"]
-        except: cited_by_table = None
-
-        try:
-            cited_by_graph = results["cited_by"]["graph"]
-        except: cited_by_graph = None
+        cited_by_table = results.get("cited_by", {}).get("table")
+        cited_by_graph = results.get("cited_by", {}).get("graph")
 
         public_access_link = results.get("public_access", {}).get("link")
         available_public_access = results.get("public_access", {}).get("available")
@@ -110,7 +104,6 @@ def author_results():
 
 
 def all_author_articles():
-
     author_article_results_data = []
 
     for index, author_id in enumerate(profile_results(), start=1):
@@ -130,37 +123,34 @@ def all_author_articles():
         while articles_is_present:
 
             results = search.get_dict()
+            
+            for article in results["articles"]:
+                title = article["title"]
+                link = article["link"]
+                citation_id = article["citation_id"]
+                authors = article["authors"]
+                publication = article.get("publication")
+                cited_by_value = article["cited_by"]["value"]
+                cited_by_link = article["cited_by"]["link"]
+                cited_by_cites_id = article.get("cited_by").get("cites_id")
+                year = article["year"]
 
-            try:
-                for article in results["articles"]:
-                    title = article["title"]
-                    link = article["link"]
-                    citation_id = article["citation_id"]
-                    authors = article["authors"]
-                    publication = article.get("publication")
-                    cited_by_value = article["cited_by"]["value"]
-                    cited_by_link = article["cited_by"]["link"]
-                    cited_by_cites_id = article.get("cited_by").get("cites_id")
-                    year = article["year"]
+                author_article_results_data.append({
+                    "article_title": title,
+                    "article_link": link,
+                    "article_year": year,
+                    "article_citation_id": citation_id,
+                    "article_authors": authors,
+                    "article_publication": publication,
+                    "article_cited_by_value": cited_by_value,
+                    "article_cited_by_link": cited_by_link,
+                    "article_cited_by_cites_id": cited_by_cites_id,
+                })
 
-                    author_article_results_data.append({
-                        "article_title": title,
-                        "article_link": link,
-                        "article_year": year,
-                        "article_citation_id": citation_id,
-                        "article_authors": authors,
-                        "article_publication": publication,
-                        "article_cited_by_value": cited_by_value,
-                        "article_cited_by_link": cited_by_link,
-                        "article_cited_by_cites_id": cited_by_cites_id,
-                    })
-
-                    if "next" in results["serpapi_pagination"]:
-                        search.params_dict.update(dict(parse_qsl(urlsplit(results["serpapi_pagination"]["next"]).query)))
-                    else:
-                        articles_is_present = False
-            except:
-                break
+            if "next" in results.get("serpapi_pagination", []):
+                search.params_dict.update(dict(parse_qsl(urlsplit(results.get("serpapi_pagination").get("next")).query)))
+            else:
+                articles_is_present = False
 
     return author_article_results_data
 
